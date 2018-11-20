@@ -1,0 +1,17 @@
+version: "3"
+
+services:
+  sr-queue:
+    build: ./sr-queue
+    ports:
+      - "2181:2181"
+      - "9092:9092"
+    networks:
+      - carrier-tier
+      - vendor-tier
+      - internal-tier
+
+networks:
+  carrier-tier:
+  vendor-tier:
+  internal-tier:
