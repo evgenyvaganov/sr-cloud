@@ -1,3 +1,5 @@
+package com.guidewire.devconnect;
+
 import java.time.Duration;
 
 import org.apache.kafka.clients.consumer.Consumer;
