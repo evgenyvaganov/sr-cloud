@@ -1,0 +1,37 @@
+#Line ending settings for all text files
+* text eol=lf
+
+#Exception for files that need specific line endings
+*.bat text eol=crlf
+*.csv text eol=crlf
+*.rtf text eol=crlf
+
+#Exceptions for binary files
+*.GIF binary
+*.amf binary
+*.cer binary
+*.dat binary
+*.dll binary
+*.doc binary
+*.docx binary
+*.ear binary
+*.exe binary
+*.gif binary
+*.gwrules binary
+*.ico binary
+*.jar binary
+*.jks binary
+*.jpg binary
+*.lic binary
+*.pdf binary
+*.png binary
+*.rtf binary
+*.so binary
+*.tif binary
+*.ttf binary
+*.war binary
+*.woff binary
+*.xls binary
+*.xlsm binary
+*.xlsx binary
+*.zip binary
