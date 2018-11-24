@@ -11,7 +11,7 @@ public class ProducerCreator {
   public static Producer<Long, String> createProducer() {
     Properties props = new Properties();
     props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "127.0.0.1:9092");
-    props.put(ProducerConfig.CLIENT_ID_CONFIG, "client1");
+    props.put(ProducerConfig.CLIENT_ID_CONFIG, "carrierId1");
     props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, LongSerializer.class.getName());
     props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
     return new KafkaProducer<>(props);
