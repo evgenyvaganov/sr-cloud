@@ -10,7 +10,7 @@ public class ProducerMain {
   public static void main(String[] args) {
     Producer<Long, String> producer = ProducerCreator.createProducer();
     for (int index = 0; index < 1000; ++index) {
-      ProducerRecord<Long, String> record = new ProducerRecord<>("vendor-in", "This is record " + index);
+      ProducerRecord<Long, String> record = new ProducerRecord<>("vendor-out", "This is record " + index);
       try {
         RecordMetadata metadata = producer.send(record).get(1000, TimeUnit.SECONDS);
         System.out.println("Record sent with key " + index + " to partition " + metadata.partition()

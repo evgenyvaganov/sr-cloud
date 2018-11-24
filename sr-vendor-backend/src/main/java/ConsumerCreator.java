@@ -12,7 +12,7 @@ public class ConsumerCreator {
   public static Consumer<Long, String> createConsumer() {
     Properties props = new Properties();
     props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "127.0.0.1:9092");
-    props.put(ConsumerConfig.GROUP_ID_CONFIG, "consumerGroup1");
+    props.put(ConsumerConfig.GROUP_ID_CONFIG, "vendorGroupId1");
     props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, LongDeserializer.class.getName());
     props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
     props.put(ConsumerConfig.MAX_POLL_RECORDS_CONFIG, 1);
