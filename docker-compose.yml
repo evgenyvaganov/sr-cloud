@@ -15,6 +15,14 @@ services:
       - carrier-tier
       - vendor-tier
       - internal-tier
+  sr-vendor-backend:
+    build: ./sr-vendor-backend
+    networks:
+      - vendor-tier
+  sr-carrier-backend:
+    build: ./sr-carrier-backend
+    networks:
+      - carrier-tier
 
 networks:
   carrier-tier:
