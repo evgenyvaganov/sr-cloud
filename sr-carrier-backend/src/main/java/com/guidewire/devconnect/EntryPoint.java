@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 public class EntryPoint {
   private static Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
+
   public static void main(String[] args) throws InterruptedException {
     LOGGER.info("Starting EntryPoint");
 
