@@ -11,6 +11,22 @@ repositories {
     mavenCentral()
 }
 
+task fatJar(type: Jar) {
+    manifest {
+        attributes 'Implementation-Title': 'Continuous Delivery',
+                'Implementation-Version': version
+    }
+    baseName = project.name
+    from {
+        def compileRuntime = []
+        compileRuntime.addAll(configurations.compile)
+        compileRuntime.addAll(configurations.runtime)
+        compileRuntime.collect { it.isDirectory() ? it : zipTree(it) } }
+    exclude("META-INF/*.SF", "META-INF/*.DSA", "META-INF/*.RSA")
+    with jar
+}
+
+
 dependencies {
     compile group: 'org.apache.kafka', name: 'kafka-clients', version: '2.0.1'
     compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.25'
