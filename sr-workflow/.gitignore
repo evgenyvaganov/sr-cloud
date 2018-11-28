@@ -1,0 +1,17 @@
+.gradle
+/build/
+!gradle/wrapper/gradle-wrapper.jar
+.terraform
+.DS_Store
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+/out/
+
+### Eclipse ###
+.classpath
+.project
+.settings/
