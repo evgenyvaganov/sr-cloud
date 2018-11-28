@@ -8,6 +8,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.statemachine.StateMachine;
+import org.springframework.statemachine.config.StateMachineFactory;
 import org.springframework.test.context.junit4.SpringRunner;
 
 @RunWith(SpringRunner.class)
@@ -15,13 +16,22 @@ import org.springframework.test.context.junit4.SpringRunner;
 public class SrWorkflowApplicationTests {
   @Autowired
   @SuppressWarnings("all")
-  private StateMachine<ServiceRequestStates, ServiceRequestEvents> _stateMachine;
+  private StateMachineFactory<ServiceRequestStates, ServiceRequestEvents> _stateMachineFactory;
 
   @Test
   public void testCheckTransition() {
-    _stateMachine.start();
-    _stateMachine.sendEvent(ServiceRequestEvents.JOB_ACCEPTED);
+    StateMachine<ServiceRequestStates, ServiceRequestEvents> stateMachine = _stateMachineFactory.getStateMachine();
+    stateMachine.start();
+    stateMachine.sendEvent(ServiceRequestEvents.JOB_ACCEPTED);
 
-    assertThat(_stateMachine.getState().getId()).isEqualTo(ServiceRequestStates.IN_PROGRESS);
+    assertThat(stateMachine.getState().getId()).isEqualTo(ServiceRequestStates.IN_PROGRESS);
+  }
+
+  @Test
+  public void testCreatedStateMachineAreDifferent() {
+    StateMachine<ServiceRequestStates, ServiceRequestEvents> stateMachine1 = _stateMachineFactory.getStateMachine();
+    StateMachine<ServiceRequestStates, ServiceRequestEvents> stateMachine2 = _stateMachineFactory.getStateMachine();
+
+    assertThat(stateMachine1).isNotSameAs(stateMachine2);
   }
 }

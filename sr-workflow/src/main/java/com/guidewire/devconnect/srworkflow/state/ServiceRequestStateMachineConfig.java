@@ -3,13 +3,13 @@ package com.guidewire.devconnect.srworkflow.state;
 import java.util.EnumSet;
 
 import org.springframework.context.annotation.Configuration;
-import org.springframework.statemachine.config.EnableStateMachine;
+import org.springframework.statemachine.config.EnableStateMachineFactory;
 import org.springframework.statemachine.config.EnumStateMachineConfigurerAdapter;
 import org.springframework.statemachine.config.builders.StateMachineStateConfigurer;
 import org.springframework.statemachine.config.builders.StateMachineTransitionConfigurer;
 
 @Configuration
-@EnableStateMachine
+@EnableStateMachineFactory
 class ServiceRequestStateMachineConfig extends EnumStateMachineConfigurerAdapter<ServiceRequestStates, ServiceRequestEvents> {
 
   @Override
