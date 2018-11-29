@@ -1,0 +1,6 @@
+$KAFKA_HOME/bin/kafka-topics.sh --list --zookeeper localhost:2181 .
+
+$KAFKA_HOME/bin/kafka-topics.sh --create --zookeeper localhost:2181 --replication-factor 1 --partitions 100 --topic carrier-out . && \
+$KAFKA_HOME/bin/kafka-topics.sh --create --zookeeper localhost:2181 --replication-factor 1 --partitions 100 --topic carrier-in . && \
+$KAFKA_HOME/bin/kafka-topics.sh --create --zookeeper localhost:2181 --replication-factor 1 --partitions 100 --topic vendor-out . && \
+$KAFKA_HOME/bin/kafka-topics.sh --create --zookeeper localhost:2181 --replication-factor 1 --partitions 100 --topic vendor-in .

@@ -19,12 +19,20 @@ public class SrWorkflowApplicationTests {
   private StateMachineFactory<ServiceRequestStates, ServiceRequestEvents> _stateMachineFactory;
 
   @Test
+  public void testInitialState() {
+    StateMachine<ServiceRequestStates, ServiceRequestEvents> stateMachine = _stateMachineFactory.getStateMachine();
+    stateMachine.start();
+
+    assertThat(stateMachine.getState().getId()).isEqualTo(ServiceRequestStates.DRAFT);
+  }
+
+  @Test
   public void testCheckTransition() {
     StateMachine<ServiceRequestStates, ServiceRequestEvents> stateMachine = _stateMachineFactory.getStateMachine();
     stateMachine.start();
-    stateMachine.sendEvent(ServiceRequestEvents.JOB_ACCEPTED);
+    stateMachine.sendEvent(ServiceRequestEvents.SUBMIT_INSTRUCTION);
 
-    assertThat(stateMachine.getState().getId()).isEqualTo(ServiceRequestStates.IN_PROGRESS);
+    assertThat(stateMachine.getState().getId()).isEqualTo(ServiceRequestStates.REQUESTED);
   }
 
   @Test
@@ -33,5 +41,38 @@ public class SrWorkflowApplicationTests {
     StateMachine<ServiceRequestStates, ServiceRequestEvents> stateMachine2 = _stateMachineFactory.getStateMachine();
 
     assertThat(stateMachine1).isNotSameAs(stateMachine2);
+  }
+
+  @Test
+  public void testWrongTransitionDoesNotChangeState() {
+    StateMachine<ServiceRequestStates, ServiceRequestEvents> stateMachine = _stateMachineFactory.getStateMachine();
+    stateMachine.start();
+
+    assertThat(stateMachine.getState().getId()).isEqualTo(ServiceRequestStates.DRAFT);
+
+    stateMachine.sendEvent(ServiceRequestEvents.SPECIALIST_COMPLETED_WORK);
+
+    assertThat(stateMachine.getState().getId()).isEqualTo(ServiceRequestStates.DRAFT);
+  }
+
+  @Test
+  public void testNonTerminalState() {
+    StateMachine<ServiceRequestStates, ServiceRequestEvents> stateMachine = _stateMachineFactory.getStateMachine();
+    stateMachine.start();
+
+    assertThat(stateMachine.isComplete()).isFalse();
+  }
+
+  @Test
+  public void testTerminalState() {
+    StateMachine<ServiceRequestStates, ServiceRequestEvents> stateMachine = _stateMachineFactory.getStateMachine();
+    stateMachine.start();
+
+    stateMachine.sendEvent(ServiceRequestEvents.SUBMIT_INSTRUCTION);
+    stateMachine.sendEvent(ServiceRequestEvents.SPECIALIST_ACCEPTED_WORK);
+    stateMachine.sendEvent(ServiceRequestEvents.SPECIALIST_COMPLETED_WORK);
+
+    assertThat(stateMachine.getState().getId()).isEqualTo(ServiceRequestStates.WORK_COMPLETE);
+    assertThat(stateMachine.isComplete()).isTrue();
   }
 }
