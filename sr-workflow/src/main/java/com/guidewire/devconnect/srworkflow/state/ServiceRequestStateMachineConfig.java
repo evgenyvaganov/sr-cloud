@@ -11,7 +11,7 @@ import org.springframework.statemachine.config.builders.StateMachineTransitionCo
 
 @Configuration
 @EnableStateMachineFactory
-class ServiceRequestStateMachineConfig extends EnumStateMachineConfigurerAdapter<ServiceRequestStates, ServiceRequestEvents> {
+public class ServiceRequestStateMachineConfig extends EnumStateMachineConfigurerAdapter<ServiceRequestStates, ServiceRequestEvents> {
 
   @Override
   public void configure(StateMachineStateConfigurer<ServiceRequestStates, ServiceRequestEvents> states)
