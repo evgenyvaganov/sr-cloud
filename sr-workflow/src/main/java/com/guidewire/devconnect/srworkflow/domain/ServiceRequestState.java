@@ -1,6 +1,6 @@
-package com.guidewire.devconnect.srworkflow.state;
+package com.guidewire.devconnect.srworkflow.domain;
 
-public enum ServiceRequestStates {
+public enum ServiceRequestState {
   DRAFT(1, "The service is still being edited and has not yet been sent to the vendor"),
   REQUESTED(2, "Service request has been sent to the selected vendor, and has been acknowledged"),
   SPECIALIST_WAITING(3, "Vendor is blocked"),
@@ -13,7 +13,7 @@ public enum ServiceRequestStates {
   private final int _code;
   private final String _description;
 
-  ServiceRequestStates(int code, String description) {
+  ServiceRequestState(int code, String description) {
     _code = code;
     _description = description;
   }

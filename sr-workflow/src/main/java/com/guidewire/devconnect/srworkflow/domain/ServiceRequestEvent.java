@@ -1,6 +1,6 @@
-package com.guidewire.devconnect.srworkflow.state;
+package com.guidewire.devconnect.srworkflow.domain;
 
-public enum ServiceRequestEvents {
+public enum ServiceRequestEvent {
   SPECIALIST_ACCEPTED_WORK(1, "Vendor Accepted Work"),
   SPECIALIST_RESUMED_WORK(2, "Vendor Resumed Work"),
   SPECIALIST_COMPLETED_WORK(3, "Vendor Completed Work"),
@@ -24,7 +24,7 @@ public enum ServiceRequestEvents {
   private final int _code;
   private final String _description;
 
-  ServiceRequestEvents(int code, String description) {
+  ServiceRequestEvent(int code, String description) {
     _code = code;
     _description = description;
   }
