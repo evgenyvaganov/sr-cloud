@@ -22,11 +22,11 @@ public class SrWorkflowApplication {
     thread.start();
 
     try {
-      LOGGER.info("Start sleeping");
-      Thread.sleep(5000);
-      LOGGER.info("Finished sleeping");
+      LOGGER.info("Started waiting Event Processor to be finished or interrupted");
+      thread.join();
+      LOGGER.info("Event Processor has finished");
     } catch (InterruptedException e) {
-      e.printStackTrace();
+      LOGGER.info("Event Processor has been interrupted");
     }
   }
 }
