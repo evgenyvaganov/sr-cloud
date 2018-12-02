@@ -1,5 +1,6 @@
 package com.guidewire.devconnect.srworkflow.domain;
 
+import static java.lang.String.format;
 import org.springframework.statemachine.StateMachine;
 
 public class ServiceRequest {
@@ -15,7 +16,9 @@ public class ServiceRequest {
     return _id;
   }
 
-  public ServiceRequestState getStateMachine() {
-    return _stateMachine.getState().getId();
+  public void transit(ServiceRequestEvent event) throws IllegalTransitionException {
+    if(!_stateMachine.sendEvent(event)) {
+      throw new IllegalTransitionException(format("The event %s has not been accepted", event));
+    }
   }
 }
