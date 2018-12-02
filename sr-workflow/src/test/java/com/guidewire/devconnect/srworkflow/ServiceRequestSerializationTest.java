@@ -4,7 +4,7 @@ import java.io.IOException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.guidewire.devconnect.srworkflow.dto.ServiceRequestDTO;
+import com.guidewire.devconnect.srworkflow.dto.ServiceRequestEventDTO;
 import org.junit.Test;
 
 public class ServiceRequestSerializationTest {
@@ -12,10 +12,11 @@ public class ServiceRequestSerializationTest {
   public void testServiceRequestToJson() throws IOException {
     ObjectMapper objectMapper = new ObjectMapper();
 
-    ServiceRequestDTO originalSR = new ServiceRequestDTO(10, "DRAFT");
+    ServiceRequestEventDTO originalSR = new ServiceRequestEventDTO(
+      10, "DRAFT", "SPECIALIST_ACCEPTED_WORK");
 
     String srAsString = objectMapper.writeValueAsString(originalSR);
-    ServiceRequestDTO deserializedSR = objectMapper.readValue(srAsString, ServiceRequestDTO.class);
+    ServiceRequestEventDTO deserializedSR = objectMapper.readValue(srAsString, ServiceRequestEventDTO.class);
     assertThat(deserializedSR.getId()).isEqualTo(originalSR.getId());
     assertThat(deserializedSR.getState()).isEqualTo(originalSR.getState());
   }
