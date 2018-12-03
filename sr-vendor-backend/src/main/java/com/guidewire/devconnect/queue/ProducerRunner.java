@@ -1,4 +1,4 @@
-package com.guidewire.devconnect;
+package com.guidewire.devconnect.queue;
 
 import java.lang.invoke.MethodHandles;
 import java.util.concurrent.ExecutionException;
@@ -15,20 +15,19 @@ public class ProducerRunner implements Runnable {
   private static Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   public void run() {
-    LOGGER.info("Started Producer");
+    LOGGER.info("Producer started");
 
     Producer<Long, String> producer = ProducerCreator.createProducer();
     for (int index = 0; index < 1000; ++index) {
-      ProducerRecord<Long, String> record = new ProducerRecord<>("carrier-out", "This is record " + index);
+      ProducerRecord<Long, String> record = new ProducerRecord<>("vendor-out", "This is record " + index);
       try {
         RecordMetadata metadata = producer.send(record).get(1000, TimeUnit.SECONDS);
-        LOGGER.info("Record sent with key {} to partition {}", index, metadata.partition()
-          + " with offset " + metadata.offset());
+        LOGGER.info("Record sent with key {} to partition {} with offset {}", index, metadata.partition(), metadata.offset());
       } catch (ExecutionException | InterruptedException | TimeoutException e) {
-        LOGGER.error("Error in sending record", e);
+        LOGGER.info("Error in sending record", e);
       }
     }
 
-    LOGGER.info("Finished Producer");
+    LOGGER.info("Producer finished");
   }
 }

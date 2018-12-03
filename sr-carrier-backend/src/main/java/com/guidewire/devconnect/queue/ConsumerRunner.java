@@ -1,4 +1,4 @@
-package com.guidewire.devconnect;
+package com.guidewire.devconnect.queue;
 
 import java.lang.invoke.MethodHandles;
 import java.time.Duration;

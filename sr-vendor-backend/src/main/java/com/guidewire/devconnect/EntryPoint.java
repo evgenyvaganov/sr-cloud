@@ -4,6 +4,8 @@ import java.lang.invoke.MethodHandles;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
 
+import com.guidewire.devconnect.queue.ConsumerRunner;
+import com.guidewire.devconnect.queue.ProducerRunner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
