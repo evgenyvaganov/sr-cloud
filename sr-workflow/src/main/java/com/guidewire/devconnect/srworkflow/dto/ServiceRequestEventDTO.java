@@ -9,7 +9,7 @@ public class ServiceRequestEventDTO {
 
   public ServiceRequestEventDTO(
     @JsonProperty("id") long id,
-    @JsonProperty("state") String state,
+    @JsonProperty("currentState") String state,
     @JsonProperty("event") String event) {
     _id = id;
     _state = state;
@@ -20,7 +20,7 @@ public class ServiceRequestEventDTO {
     return _id;
   }
 
-  public String getState() {
+  public String getCurrentState() {
     return _state;
   }
 

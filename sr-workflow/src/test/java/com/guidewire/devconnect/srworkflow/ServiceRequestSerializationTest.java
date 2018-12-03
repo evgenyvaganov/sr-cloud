@@ -18,6 +18,6 @@ public class ServiceRequestSerializationTest {
     String srAsString = objectMapper.writeValueAsString(originalSR);
     ServiceRequestEventDTO deserializedSR = objectMapper.readValue(srAsString, ServiceRequestEventDTO.class);
     assertThat(deserializedSR.getId()).isEqualTo(originalSR.getId());
-    assertThat(deserializedSR.getState()).isEqualTo(originalSR.getState());
+    assertThat(deserializedSR.getCurrentState()).isEqualTo(originalSR.getCurrentState());
   }
 }

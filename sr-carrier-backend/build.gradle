@@ -28,6 +28,7 @@ task fatJar(type: Jar) {
 
 
 dependencies {
+    compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.9.7'
     compile group: 'org.apache.kafka', name: 'kafka-clients', version: '2.0.1'
     compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.25'
     runtime group: 'ch.qos.logback', name: 'logback-classic', version: '1.2.3'

@@ -12,6 +12,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.guidewire.devconnect.srworkflow.domain.IllegalTransitionException;
 import com.guidewire.devconnect.srworkflow.domain.ServiceRequestService;
+import com.guidewire.devconnect.srworkflow.dto.EnvelopeDTO;
+import com.guidewire.devconnect.srworkflow.dto.EnvelopePayloadType;
 import com.guidewire.devconnect.srworkflow.dto.ServiceRequestErrorDTO;
 import com.guidewire.devconnect.srworkflow.dto.ServiceRequestEventDTO;
 import org.apache.kafka.clients.consumer.Consumer;
@@ -61,7 +63,12 @@ public class EventProcessor implements Runnable {
     String payload = event.value();
     ServiceRequestEventDTO dto = null;
     try {
-      dto = _objectMapper.readValue(payload, ServiceRequestEventDTO.class);
+      EnvelopeDTO envelope = _objectMapper.readValue(payload, EnvelopeDTO.class);
+      if (envelope.getType() != EnvelopePayloadType.SERVICE_REQUEST_EVENT) {
+        throw new IllegalArgumentException("Event processor supports only SERVICE_REQUEST_EVENT");
+      }
+
+      dto = _objectMapper.readValue(envelope.getPayload(), ServiceRequestEventDTO.class);
       _serviceRequestService.handle(dto);
     } catch (IOException e) {
       LOGGER.error(format("The event %s has failed to parse", payload), e);
@@ -75,7 +82,9 @@ public class EventProcessor implements Runnable {
     try {
       ServiceRequestErrorDTO error = new ServiceRequestErrorDTO(errorMsg, dto);
       String errorPayload = _objectMapper.writeValueAsString(error);
-      publishEvent(event.topic(), errorPayload);
+      EnvelopeDTO envelopeDTO = new EnvelopeDTO(EnvelopePayloadType.SERVICE_REQUEST_ERROR, errorPayload);
+      String errorEnvelope = _objectMapper.writeValueAsString(envelopeDTO);
+      publishEvent(event.topic(), errorEnvelope);
     } catch (JsonProcessingException e) {
       LOGGER.error(format("Could not process error %s and send event about it", errorMsg), e);
     }
