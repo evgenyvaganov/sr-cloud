@@ -1,30 +1,23 @@
 package com.guidewire.devconnect.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+public enum ServiceRequestEventDTO {
+  SUBMIT_INSTRUCTION("submit-instruction", "Submit Instruction"),
+  SPECIALIST_ACCEPTED_WORK("specialist-accepted-work", "Vendor Accepted Work"),
+  SPECIALIST_COMPLETED_WORK("specialist-completed-work", "Vendor Completed Work");
 
-public class ServiceRequestEventDTO {
-  private long _id;
-  private String _state;
-  private String _event;
+  private final String _code;
+  private final String _description;
 
-  public ServiceRequestEventDTO(
-    @JsonProperty("id") long id,
-    @JsonProperty("currentState") String state,
-    @JsonProperty("event") String event) {
-    _id = id;
-    _state = state;
-    _event = event;
+  ServiceRequestEventDTO(String code, String description) {
+    _code = code;
+    _description = description;
   }
 
-  public long getId() {
-    return _id;
+  public String getCode() {
+    return _code;
   }
 
-  public String getCurrentState() {
-    return _state;
-  }
-
-  public String getEvent() {
-    return _event;
+  public String getDescription() {
+    return _description;
   }
 }
