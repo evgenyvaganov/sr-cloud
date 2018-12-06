@@ -2,22 +2,22 @@ package com.guidewire.devconnect.srworkflow.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class ServiceRequestErrorDTO {
+public class ServiceRequestCreateDTO {
   private long _correlationId;
-  private String _errorMsg;
+  private String _description;
 
-  public ServiceRequestErrorDTO(
+  public ServiceRequestCreateDTO(
     @JsonProperty("correlationId") long correlationId,
-    @JsonProperty("errorMsg") String errorMsg) {
+    @JsonProperty("description") String description) {
     _correlationId = correlationId;
-    _errorMsg = errorMsg;
+    _description = description;
   }
 
   public long getCorrelationId() {
     return _correlationId;
   }
 
-  public String getErrorMsg() {
-    return _errorMsg;
+  public String getDescription() {
+    return _description;
   }
 }

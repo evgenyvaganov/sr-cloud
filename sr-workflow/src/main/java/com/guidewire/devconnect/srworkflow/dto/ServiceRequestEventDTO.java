@@ -3,28 +3,21 @@ package com.guidewire.devconnect.srworkflow.dto;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class ServiceRequestEventDTO {
-  private long _id;
-  private String _state;
-  private String _event;
+  private long _correlationId;
+  private ServiceRequestDTO _serviceRequestDTO;
 
   public ServiceRequestEventDTO(
-    @JsonProperty("id") long id,
-    @JsonProperty("currentState") String state,
-    @JsonProperty("event") String event) {
-    _id = id;
-    _state = state;
-    _event = event;
+    @JsonProperty("correlationId") long correlationId,
+    @JsonProperty("serviceRequestDTO") ServiceRequestDTO serviceRequestDTO) {
+    _correlationId = correlationId;
+    _serviceRequestDTO = serviceRequestDTO;
   }
 
-  public long getId() {
-    return _id;
+  public long getCorrelationId() {
+    return _correlationId;
   }
 
-  public String getCurrentState() {
-    return _state;
-  }
-
-  public String getEvent() {
-    return _event;
+  public ServiceRequestDTO getServiceRequestDTO() {
+    return _serviceRequestDTO;
   }
 }

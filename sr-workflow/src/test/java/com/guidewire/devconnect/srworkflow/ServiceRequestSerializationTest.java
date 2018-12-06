@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.guidewire.devconnect.srworkflow.dto.ServiceRequestDTO;
 import com.guidewire.devconnect.srworkflow.dto.ServiceRequestEventDTO;
 import org.junit.Test;
 
@@ -12,12 +13,14 @@ public class ServiceRequestSerializationTest {
   public void testServiceRequestToJson() throws IOException {
     ObjectMapper objectMapper = new ObjectMapper();
 
-    ServiceRequestEventDTO originalSR = new ServiceRequestEventDTO(
-      10, "DRAFT", "SPECIALIST_ACCEPTED_WORK");
+    ServiceRequestDTO serviceRequestDTO = new ServiceRequestDTO(25, "DRAFT", "Transmission is broken");
+    ServiceRequestEventDTO eventDTO = new ServiceRequestEventDTO(10, serviceRequestDTO);
 
-    String srAsString = objectMapper.writeValueAsString(originalSR);
-    ServiceRequestEventDTO deserializedSR = objectMapper.readValue(srAsString, ServiceRequestEventDTO.class);
-    assertThat(deserializedSR.getId()).isEqualTo(originalSR.getId());
-    assertThat(deserializedSR.getCurrentState()).isEqualTo(originalSR.getCurrentState());
+    String eventDTOAsString = objectMapper.writeValueAsString(eventDTO);
+    ServiceRequestEventDTO deserializedEventDTO = objectMapper.readValue(eventDTOAsString, ServiceRequestEventDTO.class);
+    assertThat(deserializedEventDTO.getCorrelationId()).isEqualTo(eventDTO.getCorrelationId());
+    assertThat(deserializedEventDTO.getServiceRequestDTO().getId()).isEqualTo(eventDTO.getServiceRequestDTO().getId());
+    assertThat(deserializedEventDTO.getServiceRequestDTO().getState()).isEqualTo(eventDTO.getServiceRequestDTO().getState());
+    assertThat(deserializedEventDTO.getServiceRequestDTO().getDescription()).isEqualTo(eventDTO.getServiceRequestDTO().getDescription());
   }
 }

@@ -16,14 +16,10 @@ public class EntryPoint {
     LOGGER.info("Starting EntryPoint");
 
     ThreadFactory threadFactory = Executors.defaultThreadFactory();
-    Thread producerThread = threadFactory.newThread(new ProducerRunner());
-    Thread consumerThread = threadFactory.newThread(new ConsumerRunner());
+    Thread scenarioThread = threadFactory.newThread(new ServiceRequestSimpleHappyScenario());
 
-    producerThread.start();
-    consumerThread.start();
-
-    producerThread.join();
-    consumerThread.join();
+    scenarioThread.start();
+    scenarioThread.join();
 
     LOGGER.info("Starting EntryPoint");
   }
