@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
 
 import static java.lang.String.format;
+import com.guidewire.devconnect.srworkflow.dto.DomainToDTOConverter;
 import com.guidewire.devconnect.srworkflow.dto.ServiceRequestCreateDTO;
 import com.guidewire.devconnect.srworkflow.dto.ServiceRequestUpdateDTO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,9 @@ public class ServiceRequestService {
   @SuppressWarnings("all")
   private StateMachineFactory<ServiceRequestState, ServiceRequestEvent> _stateMachineFactory;
 
+  @Autowired
+  private DomainToDTOConverter _converter;
+
   public ServiceRequest handle(ServiceRequestCreateDTO create) {
     StateMachine<ServiceRequestState, ServiceRequestEvent> stateMachine = _stateMachineFactory.getStateMachine();
     ServiceRequest serviceRequest = new ServiceRequest(_srId.getAndIncrement(), create.getDescription(), stateMachine);
@@ -32,7 +36,7 @@ public class ServiceRequestService {
     if (serviceRequest == null) {
       throw new IllegalTransitionException(format("The service request with id %s has not been found", update));
     } else {
-      ServiceRequestEvent event = ServiceRequestEvent.valueOf(update.getEvent());
+      ServiceRequestEvent event = _converter.toDomain(update.getEvent());
       serviceRequest.transit(event);
       return serviceRequest;
     }

@@ -1,23 +1,23 @@
 package com.guidewire.devconnect.srworkflow.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+public enum ServiceRequestEventDTO {
+  SUBMIT_INSTRUCTION("submit-instruction", "Submit Instruction"),
+  SPECIALIST_ACCEPTED_WORK("specialist-accepted-work", "Vendor Accepted Work"),
+  SPECIALIST_COMPLETED_WORK("specialist-completed-work", "Vendor Completed Work");
 
-public class ServiceRequestEventDTO {
-  private long _correlationId;
-  private ServiceRequestDTO _serviceRequestDTO;
+  private final String _code;
+  private final String _description;
 
-  public ServiceRequestEventDTO(
-    @JsonProperty("correlationId") long correlationId,
-    @JsonProperty("serviceRequestDTO") ServiceRequestDTO serviceRequestDTO) {
-    _correlationId = correlationId;
-    _serviceRequestDTO = serviceRequestDTO;
+  ServiceRequestEventDTO(String code, String description) {
+    _code = code;
+    _description = description;
   }
 
-  public long getCorrelationId() {
-    return _correlationId;
+  public String getCode() {
+    return _code;
   }
 
-  public ServiceRequestDTO getServiceRequestDTO() {
-    return _serviceRequestDTO;
+  public String getDescription() {
+    return _description;
   }
 }

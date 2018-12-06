@@ -4,12 +4,12 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class ServiceRequestDTO {
   private long _id;
-  private String _state;
+  private ServiceRequestStateDTO _state;
   private String _description;
 
   public ServiceRequestDTO(
     @JsonProperty("id") long id,
-    @JsonProperty("state") String state,
+    @JsonProperty("state") ServiceRequestStateDTO state,
     @JsonProperty("description") String description) {
     _id = id;
     _state = state;
@@ -20,7 +20,7 @@ public class ServiceRequestDTO {
     return _id;
   }
 
-  public String getState() {
+  public ServiceRequestStateDTO getState() {
     return _state;
   }
 

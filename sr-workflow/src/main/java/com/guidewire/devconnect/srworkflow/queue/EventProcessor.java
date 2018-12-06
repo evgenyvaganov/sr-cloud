@@ -19,7 +19,7 @@ import com.guidewire.devconnect.srworkflow.dto.EnvelopePayloadType;
 import com.guidewire.devconnect.srworkflow.dto.ServiceRequestCreateDTO;
 import com.guidewire.devconnect.srworkflow.dto.ServiceRequestDTO;
 import com.guidewire.devconnect.srworkflow.dto.ServiceRequestErrorDTO;
-import com.guidewire.devconnect.srworkflow.dto.ServiceRequestEventDTO;
+import com.guidewire.devconnect.srworkflow.dto.ServiceRequestSnapshotDTO;
 import com.guidewire.devconnect.srworkflow.dto.ServiceRequestUpdateDTO;
 import org.apache.kafka.clients.consumer.Consumer;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
@@ -111,7 +111,7 @@ public class EventProcessor implements Runnable {
 
   private String toEvent(ServiceRequest serviceRequest, long correlationId) throws JsonProcessingException {
     ServiceRequestDTO serviceRequestDTO = _converter.toDTO(serviceRequest);
-    ServiceRequestEventDTO eventDTO = new ServiceRequestEventDTO(correlationId, serviceRequestDTO);
+    ServiceRequestSnapshotDTO eventDTO = new ServiceRequestSnapshotDTO(correlationId, serviceRequestDTO);
     EnvelopeDTO envelopeDTO = new EnvelopeDTO(EnvelopePayloadType.SERVICE_REQUEST_EVENT, _objectMapper.writeValueAsString(eventDTO));
     return _objectMapper.writeValueAsString(envelopeDTO);
   }

@@ -5,12 +5,12 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class ServiceRequestUpdateDTO {
   private long _correlationId;
   private long _id;
-  private String _event;
+  private ServiceRequestEventDTO _event;
 
   public ServiceRequestUpdateDTO(
     @JsonProperty("correlationId") long correlationId,
     @JsonProperty("id") long id,
-    @JsonProperty("event") String event) {
+    @JsonProperty("event") ServiceRequestEventDTO event) {
     _correlationId = correlationId;
     _id = id;
     _event = event;
@@ -24,7 +24,7 @@ public class ServiceRequestUpdateDTO {
     return _id;
   }
 
-  public String getEvent() {
+  public ServiceRequestEventDTO getEvent() {
     return _event;
   }
 }
