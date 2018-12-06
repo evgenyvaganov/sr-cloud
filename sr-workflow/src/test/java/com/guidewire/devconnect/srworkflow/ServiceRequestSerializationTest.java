@@ -5,7 +5,6 @@ import java.io.IOException;
 import static org.assertj.core.api.Assertions.assertThat;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.guidewire.devconnect.srworkflow.dto.ServiceRequestDTO;
-import com.guidewire.devconnect.srworkflow.dto.ServiceRequestSnapshotDTO;
 import com.guidewire.devconnect.srworkflow.dto.ServiceRequestStateDTO;
 import org.junit.Test;
 
@@ -14,14 +13,12 @@ public class ServiceRequestSerializationTest {
   public void testServiceRequestToJson() throws IOException {
     ObjectMapper objectMapper = new ObjectMapper();
 
-    ServiceRequestDTO serviceRequestDTO = new ServiceRequestDTO(25, ServiceRequestStateDTO.DRAFT, "Transmission is broken");
-    ServiceRequestSnapshotDTO eventDTO = new ServiceRequestSnapshotDTO(10, serviceRequestDTO);
+    ServiceRequestDTO requestDTO = new ServiceRequestDTO(25, ServiceRequestStateDTO.DRAFT, "Transmission is broken");
 
-    String eventDTOAsString = objectMapper.writeValueAsString(eventDTO);
-    ServiceRequestSnapshotDTO deserializedEventDTO = objectMapper.readValue(eventDTOAsString, ServiceRequestSnapshotDTO.class);
-    assertThat(deserializedEventDTO.getCorrelationId()).isEqualTo(eventDTO.getCorrelationId());
-    assertThat(deserializedEventDTO.getServiceRequestDTO().getId()).isEqualTo(eventDTO.getServiceRequestDTO().getId());
-    assertThat(deserializedEventDTO.getServiceRequestDTO().getState()).isEqualTo(eventDTO.getServiceRequestDTO().getState());
-    assertThat(deserializedEventDTO.getServiceRequestDTO().getDescription()).isEqualTo(eventDTO.getServiceRequestDTO().getDescription());
+    String eventDTOAsString = objectMapper.writeValueAsString(requestDTO);
+    ServiceRequestDTO deserializedRequestDTO = objectMapper.readValue(eventDTOAsString, ServiceRequestDTO.class);
+    assertThat(deserializedRequestDTO.getId()).isEqualTo(requestDTO.getId());
+    assertThat(deserializedRequestDTO.getState()).isEqualTo(requestDTO.getState());
+    assertThat(deserializedRequestDTO.getDescription()).isEqualTo(requestDTO.getDescription());
   }
 }
