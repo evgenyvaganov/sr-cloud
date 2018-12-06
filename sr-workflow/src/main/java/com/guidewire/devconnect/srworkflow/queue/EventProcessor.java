@@ -84,10 +84,14 @@ public class EventProcessor implements Runnable {
           ServiceRequestUpdateDTO update = _objectMapper.readValue(envelope.getPayload(), ServiceRequestUpdateDTO.class);
           try {
             ServiceRequest serviceRequest = _serviceRequestService.handle(update);
-            String envelopeDTOAsString = toEvent(serviceRequest, envelope.getCorrelationId());
+            Long carrierCorrelationId = event.topic().equals("carrier-in") ? envelope.getCorrelationId() : null;
+            Long vendorCorrelationId = event.topic().equals("vendor-in") ? envelope.getCorrelationId() : null;
 
-            publishEvent("carrier-in", envelopeDTOAsString);
-            publishEvent("vendor-in", envelopeDTOAsString);
+            String carrierEvent = toEvent(serviceRequest, carrierCorrelationId);
+            String vendorEvent = toEvent(serviceRequest, vendorCorrelationId);
+
+            publishEvent("carrier-in", carrierEvent);
+            publishEvent("vendor-in", vendorEvent);
           } catch (IllegalTransitionException e) {
             LOGGER.error("Transition error {}", e.getMessage());
             handleTransitionError(event, envelope.getCorrelationId(), e.getMessage());
@@ -107,7 +111,7 @@ public class EventProcessor implements Runnable {
     }
   }
 
-  private String toEvent(ServiceRequest serviceRequest, long correlationId) throws JsonProcessingException {
+  private String toEvent(ServiceRequest serviceRequest, Long correlationId) throws JsonProcessingException {
     ServiceRequestDTO serviceRequestDTO = _converter.toDTO(serviceRequest);
     EnvelopeDTO envelopeDTO = new EnvelopeDTO(correlationId,
       EnvelopePayloadType.SERVICE_REQUEST_SNAPSHOT,
@@ -115,7 +119,7 @@ public class EventProcessor implements Runnable {
     return _objectMapper.writeValueAsString(envelopeDTO);
   }
 
-  private void handleTransitionError(ConsumerRecord<Long, String> event, long correlationId, String errorMsg) throws JsonProcessingException {
+  private void handleTransitionError(ConsumerRecord<Long, String> event, Long correlationId, String errorMsg) throws JsonProcessingException {
     ServiceRequestErrorDTO error = new ServiceRequestErrorDTO(errorMsg);
     String errorPayload = _objectMapper.writeValueAsString(error);
     EnvelopeDTO envelopeDTO = new EnvelopeDTO(correlationId, EnvelopePayloadType.SERVICE_REQUEST_ERROR, errorPayload);
