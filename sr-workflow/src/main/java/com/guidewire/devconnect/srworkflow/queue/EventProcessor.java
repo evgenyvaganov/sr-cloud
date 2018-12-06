@@ -19,7 +19,6 @@ import com.guidewire.devconnect.srworkflow.dto.EnvelopePayloadType;
 import com.guidewire.devconnect.srworkflow.dto.ServiceRequestCreateDTO;
 import com.guidewire.devconnect.srworkflow.dto.ServiceRequestDTO;
 import com.guidewire.devconnect.srworkflow.dto.ServiceRequestErrorDTO;
-import com.guidewire.devconnect.srworkflow.dto.ServiceRequestSnapshotDTO;
 import com.guidewire.devconnect.srworkflow.dto.ServiceRequestUpdateDTO;
 import org.apache.kafka.clients.consumer.Consumer;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
@@ -76,7 +75,7 @@ public class EventProcessor implements Runnable {
           ServiceRequestCreateDTO create = _objectMapper.readValue(envelope.getPayload(), ServiceRequestCreateDTO.class);
           ServiceRequest serviceRequest = _serviceRequestService.handle(create);
 
-          String envelopeDTOAsString = toEvent(serviceRequest, create.getCorrelationId());
+          String envelopeDTOAsString = toEvent(serviceRequest, envelope.getCorrelationId());
 
           publishEvent("carrier-in", envelopeDTOAsString);
           publishEvent("vendor-in", envelopeDTOAsString);
@@ -86,18 +85,18 @@ public class EventProcessor implements Runnable {
           ServiceRequestUpdateDTO update = _objectMapper.readValue(envelope.getPayload(), ServiceRequestUpdateDTO.class);
           try {
             ServiceRequest serviceRequest = _serviceRequestService.handle(update);
-            String envelopeDTOAsString = toEvent(serviceRequest, update.getCorrelationId());
+            String envelopeDTOAsString = toEvent(serviceRequest, envelope.getCorrelationId());
 
             publishEvent("carrier-in", envelopeDTOAsString);
             publishEvent("vendor-in", envelopeDTOAsString);
           } catch (IllegalTransitionException e) {
             LOGGER.error("Transition error {}", e.getMessage());
-            handleTransitionError(event, update.getCorrelationId(), e.getMessage());
+            handleTransitionError(event, envelope.getCorrelationId(), e.getMessage());
           }
           break;
         }
-        case SERVICE_REQUEST_EVENT:
-        case SERVICE_REQUEST_EVENT_ERROR:
+        case SERVICE_REQUEST_SNAPSHOT:
+        case SERVICE_REQUEST_ERROR:
           throw new IllegalArgumentException(format("The event %s is incorrect for inbound request", envelope.getType()));
         default:
           throw new IllegalArgumentException(format("The envelope type %s isn't supported", envelope.getType()));
@@ -111,15 +110,16 @@ public class EventProcessor implements Runnable {
 
   private String toEvent(ServiceRequest serviceRequest, long correlationId) throws JsonProcessingException {
     ServiceRequestDTO serviceRequestDTO = _converter.toDTO(serviceRequest);
-    ServiceRequestSnapshotDTO eventDTO = new ServiceRequestSnapshotDTO(correlationId, serviceRequestDTO);
-    EnvelopeDTO envelopeDTO = new EnvelopeDTO(EnvelopePayloadType.SERVICE_REQUEST_EVENT, _objectMapper.writeValueAsString(eventDTO));
+    EnvelopeDTO envelopeDTO = new EnvelopeDTO(correlationId,
+      EnvelopePayloadType.SERVICE_REQUEST_SNAPSHOT,
+      _objectMapper.writeValueAsString(serviceRequestDTO));
     return _objectMapper.writeValueAsString(envelopeDTO);
   }
 
   private void handleTransitionError(ConsumerRecord<Long, String> event, long correlationId, String errorMsg) throws JsonProcessingException {
-    ServiceRequestErrorDTO error = new ServiceRequestErrorDTO(correlationId, errorMsg);
+    ServiceRequestErrorDTO error = new ServiceRequestErrorDTO(errorMsg);
     String errorPayload = _objectMapper.writeValueAsString(error);
-    EnvelopeDTO envelopeDTO = new EnvelopeDTO(EnvelopePayloadType.SERVICE_REQUEST_EVENT_ERROR, errorPayload);
+    EnvelopeDTO envelopeDTO = new EnvelopeDTO(correlationId, EnvelopePayloadType.SERVICE_REQUEST_ERROR, errorPayload);
     String errorEnvelope = _objectMapper.writeValueAsString(envelopeDTO);
     publishEvent(event.topic(), errorEnvelope);
   }
