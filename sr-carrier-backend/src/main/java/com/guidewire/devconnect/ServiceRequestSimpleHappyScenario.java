@@ -48,28 +48,25 @@ public class ServiceRequestSimpleHappyScenario implements Runnable {
       LOGGER.info("Start SR simple happy path scenario");
 
       // 1. Submitting service request
-      LOGGER.info("1. Sending request to create SR");
+      LOGGER.info("1. Sending request to create SR and waiting for DRAFT");
       createServiceRequest(1);
-      LOGGER.info("1. Successfully sent request to create SR");
+      ServiceRequestDTO serviceRequestDTO = waitForSnapshot(1L, ServiceRequestStateDTO.DRAFT);
+      LOGGER.info("1. Successfully sent request to create SR and received DRAFT event");
 
-      // 2. Waiting for the service request to be DRAFT
-      LOGGER.info("2. Waiting for REQUESTED");
-      ServiceRequestDTO serviceRequestDTO = waitForSnapshot(2, ServiceRequestStateDTO.DRAFT);
-      LOGGER.info("2. Successfully received REQUESTED");
+      // 2. Submitting instruction
+      LOGGER.info("2. Submitting instruction and waiting it to be REQUESTED");
+      submitInstruction(2, serviceRequestDTO);
+      serviceRequestDTO = waitForSnapshot(2L, ServiceRequestStateDTO.REQUESTED);
+      LOGGER.info("2. Successfully submitted instruction and received REQUESTED event");
 
-      // 3. Submitting instruction
-      LOGGER.info("3. Submitting instruction");
-      submitInstruction(3, serviceRequestDTO);
-      LOGGER.info("3. Successfully submitted instruction");
+      // 3. Waiting for the service request to be IN-PROGRESS
+      LOGGER.info("3. Waiting for IN-PROGRESS");
+      waitForSnapshot(null, ServiceRequestStateDTO.IN_PROGRESS);
+      LOGGER.info("3. Successfully received IN-PROGRESS");
 
-      // 4. Waiting for the service request to be IN-PROGRESS
-      LOGGER.info("4. Waiting for IN-PROGRESS");
-      waitForSnapshot(0, ServiceRequestStateDTO.IN_PROGRESS);
-      LOGGER.info("4. Successfully received IN-PROGRESS");
-
-      // 5. Wait for the service request to be WORK-COMPLETE
-      LOGGER.info("5. Waiting for WORK-COMPLETE");
-      waitForSnapshot(0, ServiceRequestStateDTO.WORK_COMPLETE);
+      // 4. Wait for the service request to be WORK-COMPLETE
+      LOGGER.info("4. Waiting for WORK-COMPLETE");
+      waitForSnapshot(null, ServiceRequestStateDTO.WORK_COMPLETE);
       LOGGER.info("5. Successfully received WORK-COMPLETE");
 
       LOGGER.info("Finished SR simple happy path scenario");
@@ -110,7 +107,7 @@ public class ServiceRequestSimpleHappyScenario implements Runnable {
     future.get(10, TimeUnit.SECONDS);
   }
 
-  private ServiceRequestDTO waitForSnapshot(long correlationId, ServiceRequestStateDTO state) throws IOException {
+  private ServiceRequestDTO waitForSnapshot(Long correlationId, ServiceRequestStateDTO state) throws IOException {
     ConsumerRecords<Long, String> consumerRecords = _consumer.poll(Duration.ofMillis(5000));
     ConsumerRecord<Long, String> response = consumerRecords.iterator().next();
     _consumer.commitAsync();
