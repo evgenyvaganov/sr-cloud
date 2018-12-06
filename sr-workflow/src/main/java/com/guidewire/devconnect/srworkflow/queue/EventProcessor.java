@@ -78,7 +78,6 @@ public class EventProcessor implements Runnable {
           String envelopeDTOAsString = toEvent(serviceRequest, envelope.getCorrelationId());
 
           publishEvent("carrier-in", envelopeDTOAsString);
-          publishEvent("vendor-in", envelopeDTOAsString);
           break;
         }
         case SERVICE_REQUEST_UPDATE: {
