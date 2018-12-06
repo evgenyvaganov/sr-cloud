@@ -11,7 +11,7 @@ public class EntryPoint {
   private static Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   public static void main(String[] args) throws InterruptedException {
-    LOGGER.info("Starting EntryPoint");
+    LOGGER.info("Starting Carrier EntryPoint");
 
     ThreadFactory threadFactory = Executors.defaultThreadFactory();
     Thread scenarioThread = threadFactory.newThread(new ServiceRequestSimpleHappyScenario());
@@ -19,6 +19,6 @@ public class EntryPoint {
     scenarioThread.start();
     scenarioThread.join();
 
-    LOGGER.info("Starting EntryPoint");
+    LOGGER.info("Finished Carrier EntryPoint");
   }
 }

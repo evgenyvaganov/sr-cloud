@@ -12,7 +12,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.guidewire.devconnect.dto.EnvelopeDTO;
 import com.guidewire.devconnect.dto.EnvelopePayloadType;
-import com.guidewire.devconnect.dto.ServiceRequestCreateDTO;
 import com.guidewire.devconnect.dto.ServiceRequestDTO;
 import com.guidewire.devconnect.dto.ServiceRequestEventDTO;
 import com.guidewire.devconnect.dto.ServiceRequestStateDTO;
@@ -47,27 +46,22 @@ public class ServiceRequestSimpleHappyScenario implements Runnable {
     try {
       LOGGER.info("Start SR simple happy path scenario");
 
-      // 1. Submitting service request
-      LOGGER.info("1. Sending request to create SR and waiting for DRAFT");
-      createServiceRequest(1);
-      ServiceRequestDTO serviceRequestDTO = waitForSnapshot(1L, ServiceRequestStateDTO.DRAFT);
-      LOGGER.info("1. Successfully sent request to create SR and received DRAFT event");
+      // 1. Waiting for SR REQUESTED
+      LOGGER.info("1. Waiting event REQUESTED");
+      ServiceRequestDTO serviceRequestDTO = waitForSnapshot(null, ServiceRequestStateDTO.REQUESTED);
+      LOGGER.info("1. Successfully recieved REQUESTED event");
 
-      // 2. Submitting instruction
-      LOGGER.info("2. Submitting instruction and waiting it to be REQUESTED");
-      postUpdate(serviceRequestDTO, 2, ServiceRequestEventDTO.SUBMIT_INSTRUCTION);
-      serviceRequestDTO = waitForSnapshot(2L, ServiceRequestStateDTO.REQUESTED);
-      LOGGER.info("2. Successfully submitted instruction and received REQUESTED event");
+      // 2. Submitting Specialist Accepted Work
+      LOGGER.info("2. Submitting Specialist Accepted Work and waiting it to be IN-PROGRESS");
+      postUpdate(serviceRequestDTO, 2, ServiceRequestEventDTO.SPECIALIST_ACCEPTED_WORK);
+      serviceRequestDTO = waitForSnapshot(2L, ServiceRequestStateDTO.IN_PROGRESS);
+      LOGGER.info("2. Successfully submitted Specialist Accepted Work and received IN-PROGRESS event");
 
-      // 3. Waiting for the service request to be IN-PROGRESS
-      LOGGER.info("3. Waiting for IN-PROGRESS");
-      waitForSnapshot(null, ServiceRequestStateDTO.IN_PROGRESS);
-      LOGGER.info("3. Successfully received IN-PROGRESS");
-
-      // 4. Wait for the service request to be WORK-COMPLETE
-      LOGGER.info("4. Waiting for WORK-COMPLETE");
-      waitForSnapshot(null, ServiceRequestStateDTO.WORK_COMPLETE);
-      LOGGER.info("5. Successfully received WORK-COMPLETE");
+      // 3. Submitting Specialist Accepted Work
+      LOGGER.info("3. Submitting Specialist Completed Work and waiting it to be WORK-COMPLETE");
+      postUpdate(serviceRequestDTO, 3, ServiceRequestEventDTO.SPECIALIST_COMPLETED_WORK);
+      serviceRequestDTO = waitForSnapshot(3L, ServiceRequestStateDTO.WORK_COMPLETE);
+      LOGGER.info("3. Successfully submitted Specialist Completed Work and received WORK-COMPLETE event");
 
       LOGGER.info("Finished SR simple happy path scenario");
     } catch (JsonProcessingException e) {
@@ -86,19 +80,6 @@ public class ServiceRequestSimpleHappyScenario implements Runnable {
     ServiceRequestUpdateDTO event = new ServiceRequestUpdateDTO(serviceRequestDTO.getId(), eventDTO);
     String eventAsString = _mapper.writeValueAsString(event);
     EnvelopeDTO envelopeDTO = new EnvelopeDTO(correlationId, EnvelopePayloadType.SERVICE_REQUEST_UPDATE, eventAsString);
-    String envelopeAsString = _mapper.writeValueAsString(envelopeDTO);
-
-    ProducerRecord<Long, String> record = new ProducerRecord<>("carrier-out", envelopeAsString);
-
-    Future<RecordMetadata> future = _producer.send(record);
-    future.get(10, TimeUnit.SECONDS);
-  }
-
-  private void createServiceRequest(long correlationId)
-      throws JsonProcessingException, InterruptedException, ExecutionException, TimeoutException {
-    ServiceRequestCreateDTO event = new ServiceRequestCreateDTO("Replace transmission");
-    String eventAsString = _mapper.writeValueAsString(event);
-    EnvelopeDTO envelopeDTO = new EnvelopeDTO(correlationId, EnvelopePayloadType.SERVICE_REQUEST_CREATE, eventAsString);
     String envelopeAsString = _mapper.writeValueAsString(envelopeDTO);
 
     ProducerRecord<Long, String> record = new ProducerRecord<>("carrier-out", envelopeAsString);
